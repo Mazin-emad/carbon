@@ -3,7 +3,7 @@ import { UserRole } from "@/drizzle/schema";
 export {};
 
 declare global {
-  interface CostumeJwtSessionClaims {
+  interface CustomJwtSessionClaims {
     role: UserRole;
     dbId: string;
   }

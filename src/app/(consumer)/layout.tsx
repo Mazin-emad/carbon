@@ -1,4 +1,6 @@
+import { canAccessAdminPages } from "@/accessPermeations/general";
 import { Button } from "@/components/ui/button";
+import { getCurrentUser } from "@/services/clerk";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -20,18 +22,13 @@ const Navbar = () => {
       <nav className="container flex gap-4">
         <Link
           href="/"
-          className="mr-auto hover:underline flex items-center px-2 text-lg cursor-pointer"
+          className="mr-auto hover:underline flex items-center text-lg cursor-pointer"
         >
           CARBON
         </Link>
         <Suspense>
           <SignedIn>
-            <Link
-              href="/admin"
-              className="hover:bg-accent/10 flex items-center px-2 cursor-pointer"
-            >
-              Admin
-            </Link>
+            <AdminLink />
             <Link
               href="/courses"
               className="hover:bg-accent/10 flex items-center px-2 cursor-pointer"
@@ -69,3 +66,17 @@ const Navbar = () => {
     </header>
   );
 };
+
+async function AdminLink() {
+  const user = await getCurrentUser();
+  if (!canAccessAdminPages(user)) return null;
+
+  return (
+    <Link
+      href="/admin"
+      className="hover:bg-accent/10 flex items-center px-2 cursor-pointer"
+    >
+      Admin
+    </Link>
+  );
+}
